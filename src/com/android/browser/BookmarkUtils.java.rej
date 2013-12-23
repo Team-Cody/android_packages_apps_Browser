@@ -1,0 +1,11 @@
+--- src/com/android/browser/BookmarkUtils.java
++++ src/com/android/browser/BookmarkUtils.java
+@@ -234,7 +234,7 @@
+             final Context context, final Message msg) {
+ 
+         new AlertDialog.Builder(context)
+-                .setIcon(android.R.drawable.ic_dialog_alert)
++                .setIconAttribute(android.R.attr.alertDialogIcon)
+                 .setMessage(context.getString(R.string.delete_bookmark_warning,
+                         title))
+                 .setPositiveButton(R.string.ok,

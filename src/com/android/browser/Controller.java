@@ -27,6 +27,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
@@ -46,6 +47,7 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.provider.BrowserContract;
 import android.provider.BrowserContract.Images;
@@ -257,7 +259,7 @@ public class Controller
     }
 
     void start(final Bundle icicle, final Intent intent) {
-        boolean noCrashRecovery = intent.getBooleanExtra(NO_CRASH_RECOVERY, false);
+        boolean noCrashRecovery = intent.getBooleanExtra(NO_CRASH_RECOVERY, true);
         if (icicle != null || noCrashRecovery) {
             doStart(icicle, intent, false);
         } else {
@@ -439,7 +441,11 @@ public class Controller
     }
 
     int getMaxTabs() {
-        return mActivity.getResources().getInteger(R.integer.max_tabs);
+        Context mContext = mActivity.getApplicationContext();
+        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String numTabs = mPrefs.getString(PreferenceKeys.PREF_MAX_TABS, "20");
+        int t = Integer.parseInt(numTabs);
+        return t;
     }
 
     @Override
@@ -1510,9 +1516,9 @@ public class Controller
 
     @Override
     public void updateMenuState(Tab tab, Menu menu) {
-        boolean canGoBack = false;
-        boolean canGoForward = false;
-        boolean isHome = false;
+        boolean canGoBack = true;
+        boolean canGoForward = true;
+        boolean isHome = true;
         boolean isDesktopUa = false;
         boolean isLive = false;
         if (tab != null) {
@@ -1775,7 +1781,7 @@ public class Controller
 
     @Override
     public void bookmarkCurrentPage() {
-        Intent bookmarkIntent = createBookmarkCurrentPageIntent(false);
+        Intent bookmarkIntent = createBookmarkCurrentPageIntent(true);
         if (bookmarkIntent != null) {
             mActivity.startActivity(bookmarkIntent);
         }
